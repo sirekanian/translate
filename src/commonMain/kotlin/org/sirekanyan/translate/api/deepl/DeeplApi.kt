@@ -1,4 +1,4 @@
-package org.sirekanyan.translate.api
+package org.sirekanyan.translate.api.deepl
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -11,11 +11,12 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.sirekanyan.translate.api.model.DeeplRequest
-import org.sirekanyan.translate.api.model.DeeplResponse
-import org.sirekanyan.translate.api.model.DeeplResponse.Translation
+import org.sirekanyan.translate.api.TranslateApi
+import org.sirekanyan.translate.api.deepl.model.DeeplRequest
+import org.sirekanyan.translate.api.deepl.model.DeeplResponse
+import org.sirekanyan.translate.api.deepl.model.DeeplResponse.Translation
 
-class DeeplApi(private val apiKey: String) {
+class DeeplApi(private val apiKey: String) : TranslateApi {
 
     private val httpClient = HttpClient(Curl) {
         install(ContentNegotiation) {
@@ -23,7 +24,7 @@ class DeeplApi(private val apiKey: String) {
         }
     }
 
-    suspend fun translate(sourceLang: String?, targetLang: String, text: String): List<String> {
+    override suspend fun translate(sourceLang: String?, targetLang: String, text: String): List<String> {
         return httpClient.post("https://api-free.deepl.com/v2/translate") {
             header("Authorization", "DeepL-Auth-Key $apiKey")
             contentType(ContentType.Application.Json)

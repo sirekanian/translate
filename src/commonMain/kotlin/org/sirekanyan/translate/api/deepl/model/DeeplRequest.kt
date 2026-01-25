@@ -1,4 +1,4 @@
-package org.sirekanyan.translate.api.model
+package org.sirekanyan.translate.api.deepl.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
