@@ -7,11 +7,7 @@ import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import kotlinx.coroutines.runBlocking
-import org.sirekanyan.translate.api.deepl.DeeplApi
-import org.sirekanyan.translate.api.google.GoogleApi
-
-private const val DeeplEnvKey = "DEEPL_TRANSLATE_API_KEY"
-private const val GoogleEnvKey = "GOOGLE_TRANSLATE_API_KEY"
+import org.sirekanyan.translate.api.createTranslateApi
 
 class MainCommand : CoreCliktCommand("translate") {
 
@@ -20,14 +16,18 @@ class MainCommand : CoreCliktCommand("translate") {
     private val text by argument().multiple()
 
     override fun run() {
-        val deeplApiKey = getEnv(DeeplEnvKey)
-        val googleApiKey = getEnv(GoogleEnvKey)
-        val api = when {
-            deeplApiKey.isNotBlank() -> DeeplApi(deeplApiKey)
-            googleApiKey.isNotBlank() -> GoogleApi(googleApiKey)
-            else -> error("Please specify $DeeplEnvKey or $GoogleEnvKey environment variable")
+        runBlocking {
+            try {
+                translate()
+            } catch (exception: TranslateException) {
+                println(exception.message)
+            }
         }
-        runBlocking { api.translate(sourceLang, targetLang, text.joinToString(" ")) }
+    }
+
+    private suspend fun translate() {
+        createTranslateApi()
+            .translate(sourceLang, targetLang, text.joinToString(" "))
             .forEach(::println)
     }
 }

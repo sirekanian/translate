@@ -2,27 +2,17 @@ package org.sirekanyan.translate.api.google
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.curl.Curl
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import org.sirekanyan.translate.api.TranslateApi
 import org.sirekanyan.translate.api.google.model.GoogleRequest
 import org.sirekanyan.translate.api.google.model.GoogleResponse
 import org.sirekanyan.translate.api.google.model.GoogleResponse.Data.Translation
 
-class GoogleApi(private val apiKey: String) : TranslateApi {
-
-    private val httpClient = HttpClient(Curl) {
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
-        }
-    }
+class GoogleApi(private val httpClient: HttpClient, private val apiKey: String) : TranslateApi {
 
     override suspend fun translate(sourceLang: String?, targetLang: String, text: String): List<String> {
         return httpClient.post("https://translation.googleapis.com/language/translate/v2") {
