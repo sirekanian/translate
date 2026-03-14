@@ -1,3 +1,3 @@
 package org.sirekanyan.translate
 
-class TranslateException(message: String) : Exception(message)
+class TranslateException(message: String, cause: Exception?) : Exception(message, cause)

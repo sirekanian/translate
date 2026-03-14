@@ -10,6 +10,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.sirekanyan.translate.TranslateException
 import org.sirekanyan.translate.api.deepl.DeeplApi
+import org.sirekanyan.translate.api.free.FreeGoogleApi
 import org.sirekanyan.translate.api.google.GoogleApi
 import org.sirekanyan.translate.getEnv
 
@@ -24,7 +25,7 @@ fun createTranslateApi(): TranslateApi {
         HttpResponseValidator {
             validateResponse { response ->
                 if (!response.status.isSuccess()) {
-                    throw TranslateException("Error ${response.status}: ${response.bodyAsText()}")
+                    throw TranslateException("Error ${response.status}: ${response.bodyAsText()}", cause = null)
                 }
             }
         }
@@ -34,7 +35,7 @@ fun createTranslateApi(): TranslateApi {
     return when {
         deeplToken.isNotBlank() -> DeeplApi(httpClient, deeplToken)
         googleToken.isNotBlank() -> GoogleApi(httpClient, googleToken)
-        else -> throw TranslateException("Please specify $DeeplEnvKey or $GoogleEnvKey environment variable")
+        else -> FreeGoogleApi(httpClient)
     }
 }
 
