@@ -1,0 +1,17 @@
+name: translate-cli
+base: core24
+version: 1.0.0
+summary: translate command-line app
+description: Command-line app for text translation using DeepL or Google Translate API.
+
+grade: stable
+confinement: strict
+
+parts:
+  translate-cli:
+    plugin: dump
+    source: https://github.com/sirekanian/translate/releases/download/v$SNAPCRAFT_PROJECT_VERSION/translate-linux-$CRAFT_ARCH_BUILD_FOR-$SNAPCRAFT_PROJECT_VERSION.tar.gz
+
+apps:
+  translate-cli:
+    command: translate

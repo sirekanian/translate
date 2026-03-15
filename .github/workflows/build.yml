@@ -1,0 +1,32 @@
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - shell: bash
+        run: ./gradlew linuxX64Binaries -Prelease
+      - shell: bash
+        run: ./gradlew mingwX64Binaries -Prelease
+      - shell: bash
+        run: ./gradlew linuxX64DistTar mingwX64DistZip -Prelease
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - shell: bash
+        run: ./gradlew macosX64Binaries -Prelease
+      - shell: bash
+        run: ./gradlew macosArm64Binaries -Prelease
+      - shell: bash
+        run: ./gradlew macosX64DistZip macosArm64DistZip -Prelease
